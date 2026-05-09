@@ -1,5 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication,QLineEdit, QLabel, QPushButton, QWidget,QVBoxLayout,QHBoxLayout
+from PyQt5.QtCore import Qt, QTime, QTimer
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QApplication, QLineEdit, QLabel, QPushButton, QWidget,QVBoxLayout,QHBoxLayout
 # app = QApplication([])
 from final_win import FinalWin
 #main_win = QWidget()
@@ -52,7 +53,7 @@ class SecondWin(QWidget):
         self.show()
     def set_appear(self):
         self.setWindowTitle('Здоровье')
-        self.move(900,70)
+        # self.move(900,70)
         self.resize(600,500)
     def setUI(self):
         self.hline = QHBoxLayout()
@@ -63,7 +64,7 @@ class SecondWin(QWidget):
         self.text3 = QLabel('Лягте на спину и замерьте пульс на 15 секунд. Нажмите кнопку "Начать тест", чтобы запустить таймер.\nРезультат запишите в соответствующее поле')
         self.text4  = QLabel('Выполните 30 приседаний за 45 секунд. Для этого нажмите кнопку "Начать приседания",\nчтобы запустить счетчик приседаний')
         self.text5 = QLabel('Лягте на спину и замерьте пульс сначала за первые 15 секунд минуты, затем за последние 15 секунд.\nНажмите кнопку "Начать финальный тест", чтобы запустить таймер.\nЗеленым обозначены секунды, в течение которых необходимо\nпроводить измерения, черным - минуты без замера пульсаций. Результаты запишите в соответствующие поля.')
-        self.time = QLabel('00:00:15')
+        self.time_text = QLabel('00:00:15')
         self.button1 = QPushButton('Начать тест')
         self.button2 = QPushButton('Начать приседания')
         self.button3 = QPushButton('Начать финальный тест')
@@ -87,17 +88,58 @@ class SecondWin(QWidget):
         self.v1line.addWidget(self.vvod4, alignment = Qt.AlignLeft)
         self.v1line.addWidget(self.vvod5, alignment = Qt.AlignLeft)
         self.v1line.addWidget(self.button4, alignment = Qt.AlignCenter)
-        self.v2line.addWidget(self.time, alignment = Qt.AlignLeft)
+        self.v2line.addWidget(self.time_text, alignment = Qt.AlignLeft)
         self.setLayout(self.hline)
         self.hline.addLayout(self.v1line)
         self.hline.addLayout(self.v2line)
     def connects(self):
-        # self.button1.clicked.connect(self.button_click)
-        # self.button2.clicked.connect(self.button_click)
-        # self.button3.clicked.connect(self.button_click)
+        self.button1.clicked.connect(self.timer1Event)
+        self.button2.clicked.connect(self.timer2Event)
+        self.button3.clicked.connect(self.timer3Event)
         self.button4.clicked.connect(self.button_click)
     def button_click(self):
         self.hide()
-        FinalWin()
+        self.final_win = FinalWin()
+    def timer1Event(self):
+        global time
+        time = QTime(0,1,0)
+        self.timer = QTimer()
+        time = time.addSecs(-1)
+        self.time_text.setText(time.toString('hh:mm:ss'))
+        self.time_text.setFont(QFont('Times',36,QFont.Bold))
+        self.time_text.setStyleSheet('color: rgb(0,0,0)')
+        self.timer.start(1000)
+        if time.toString("hh:mm:ss") == "00:00:00":
+            self.timer.stop()
+
+    def timer2Event(self):
+        global time
+        time = QTime(0,0,30)
+        self.timer = QTimer()
+        time = time.addSecs(-1)
+        self.time_text.setText(time.toString('hh:mm:ss')[6:8])
+        self.time_text.setFont(QFont('Times',36,QFont.Bold))
+        self.time_text.setStyleSheet('color: rgb(0,0,0)')
+        self.timer.start(1500)
+        if time.toString("hh:mm:ss") == "00:00:00":
+            self.timer.stop()
+    
+    def timer3Event(self):
+        global time
+        time = QTime(0,1,0)
+        self.timer = QTimer()
+        time = time.addSecs(-1)
+        self.time_text.setText(time.toString('hh:mm:ss')[6:8])
+        self.time_text.setFont(QFont('Times',36,QFont.Bold))
+        self.timer.start(1000)
+        if int(time.toString("hh:mm:ss"[6:8])) >= 45:
+            self.time_text.setStyleSheet('color: rgb(0,255,0)')
+        elif int(time.toString("hh:mm:ss"[6:8])) <= 15:
+            self.time_text.setStyleSheet('color: rgb(0,255,0)')
+        else:
+            self.time_text.setStyleSheet('color: rgb(0,0,0)')
+        
+
+
 # SecondWin()
 # app.exec_()

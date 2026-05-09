@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget,QVBoxLayout,QHBoxLayout
-# from second_win import SecondWin
+from time import time
+from second_win import SecondWin
 app = QApplication([])
 # main_win = QWidget()
 # main_win.setWindowTitle('Здоровье')
@@ -21,9 +22,10 @@ class MainWin(QWidget):
         self.setUI()
         self.connects()
         self.show()
+        print("init")
     def set_appear(self):
         self.setWindowTitle('Здоровье')
-        self.move(900,70)
+        # self.move(900,70)
         self.resize(600,500)
     def setUI(self):
         self.linev1 = QVBoxLayout()
@@ -36,10 +38,10 @@ class MainWin(QWidget):
         self.setLayout(self.linev1)
     def button_click(self):
         self.hide()
-        # SecondWin()
+        self.second_win = SecondWin()
     def connects(self):
-        pass
-        # self.button1.clicked.connect(self.button_click)
-MainWin()
+        # print("connects")
+        self.button1.clicked.connect(self.button_click)
+win = MainWin()
 # main_win.show()
 app.exec_()
